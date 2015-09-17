@@ -1,33 +1,73 @@
 #!/bin/bash
 set -euo pipefail
 
+print_usage() {
+  echo 'racknet public [ipv4|ipv6]'
+  echo 'racknet service [ipv4|ipv6]'
+  echo ''
+  echo 'Examples: '
+  echo '          $ racknet public'
+  echo '          104.130.0.127'
+  echo ''
+  echo '          $ racknet service ipv6'
+  echo '          fe80::be76:4eff:fe20:b452'
+  echo ''
+}
+
 # Get a specific IP address out, based on IP version and the interface
 obtainIP() {
-  IP_VERSION=${1:-"inet"}
+  IPV=${1:-"ipv4"}
+
+  case $IPV in
+  "ipv4")
+    ;&
+  "inet")
+    IP_VERSION="inet"
+    ;;
+  "ipv6")
+    ;&
+  "inet6")
+    IP_VERSION="inet6"
+    ;;
+  *)
+    print_usage
+    exit 1
+    ;;
+  esac
+
   INTERFACE=${2:-"eth0"}
-  ip -f ${IP_VERSION} addr show ${INTERFACE} | awk '/inet/ { print $2 }' | awk -F '/' '{print $1}'
+  addrOut=$(ip -f ${IP_VERSION} addr show ${INTERFACE} 2> /dev/null )
+  if [ "$?" != 0 ]; then
+    echo "Unable to find an $INTERFACE interface on $IPV"
+    echo ""
+    echo "If you're in Docker land, make sure to run with --net=host"
+    echo ""
+    print_usage
+    exit 2
+  fi
+
+  echo "$addrOut" | awk "/${IP_VERSION} /"' { print $2 }' | awk -F '/' '{print $1}'
 }
 
 # Public Net *should* be on eth0
-PublicNet() {
-  IP_VERSION=${1:-"inet"}
+public() {
+  IP_VERSION=${1:-"ipv4"}
   echo "$(obtainIP $IP_VERSION eth0)"
 }
 
 # ServiceNet *should* be on eth1
-ServiceNet() {
-  IP_VERSION=${1:-"inet"}
+service() {
+  IP_VERSION=${1:-"ipv4"}
   echo "$(obtainIP $IP_VERSION eth1)"
 }
 
-Primary() {
-  pn=$(PublicNet)
-  sn=$(ServiceNet)
+NETWORK=${1:-"print_usage"}
 
-  echo "PublicNet: $pn"
-  echo "ServiceNet: $pn"
-}
+if [ "$NETWORK" == "--help" ]; then
+  print_usage
+  exit 0
+fi
 
-SERVICE=${1:-"Primary"}
+IP_VERSION=${2:-"ipv4"}
 
-$SERVICE
+$NETWORK $IP_VERSION
