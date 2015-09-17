@@ -1,4 +1,4 @@
-PROG = racknet.sh
+PROG = racknet
 IMAGE = rgbkrk/$(PROG)
 
 default: image $(PROG)

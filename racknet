@@ -12,6 +12,14 @@ print_usage() {
   echo '          $ racknet service ipv6'
   echo '          fe80::be76:4eff:fe20:b452'
   echo ''
+  echo 'Examples when run with Docker: '
+  echo '          $ docker run --net=host racknet/ip public'
+  echo '          104.130.0.127'
+  echo ''
+}
+
+docker_warn() {
+    echo "If you're in Docker land, make sure to run with --net=host"
 }
 
 # Get a specific IP address out, based on IP version and the interface
@@ -40,7 +48,7 @@ obtainIP() {
   if [ "$?" != 0 ]; then
     echo "Unable to find an $INTERFACE interface on $IPV"
     echo ""
-    echo "If you're in Docker land, make sure to run with --net=host"
+    docker_warn
     echo ""
     print_usage
     exit 2
@@ -52,7 +60,15 @@ obtainIP() {
 # Public Net *should* be on eth0
 public() {
   IP_VERSION=${1:-"ipv4"}
-  echo "$(obtainIP $IP_VERSION eth0)"
+  IP="$(obtainIP $IP_VERSION eth0)"
+
+  if [ $(echo $IP | grep "^172.\d\+.\d\+.\d\+") ]; then
+    echo "Detected eth0 starting with 172.*, likely not running with --net=host"
+    echo ""
+    print_usage
+  fi
+
+  echo $IP
 }
 
 # ServiceNet *should* be on eth1
