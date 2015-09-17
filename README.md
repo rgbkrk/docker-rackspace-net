@@ -1,7 +1,6 @@
-# docker-rackspace-net
+# racknet
 
 Query the host networking when working in a Docker environment on Rackspace
-
 
 ```
 $ docker run --net=host racknet/ip public
