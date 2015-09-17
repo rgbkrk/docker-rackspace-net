@@ -22,6 +22,13 @@ import (
 // * eth0
 func GetIP() (string, error) {
 	addrs, err := net.InterfaceAddrs()
+
+	/*interfaces, err := net.Interfaces()
+	b, _ := json.MarshalIndent(addrs, "", "  ")
+	fmt.Printf("%s\n", b)
+	b, _ = json.MarshalIndent(interfaces, "", "  ")
+	fmt.Printf("%s\n", b)*/
+
 	if err != nil {
 		return "", err
 	}
