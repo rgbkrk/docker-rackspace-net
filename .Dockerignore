@@ -2,3 +2,5 @@
 LICENSE
 Makefile
 racknet.go
+.gitignore
+README.md
