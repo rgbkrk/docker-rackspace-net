@@ -13,7 +13,7 @@ print_usage() {
   echo '          fe80::be76:4eff:fe20:b452'
   echo ''
   echo 'Examples when run with Docker: '
-  echo '          $ docker run --net=host racknet/ip public'
+  echo '          $ docker run --net=host --rm racknet/ip public'
   echo '          104.130.0.127'
   echo ''
 }
