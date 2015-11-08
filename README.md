@@ -3,12 +3,12 @@
 Query the host networking when working in a Docker environment on Rackspace
 
 ```
-$ docker run --net=host racknet/ip public
+$ docker run --net=host --rm racknet/ip public
 104.130.0.127
 ```
 
 ```
-$ docker run --net=host racknet/ip service
+$ docker run --net=host --rm racknet/ip service
 10.184.13.252
 ```
 
