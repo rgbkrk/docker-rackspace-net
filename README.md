@@ -22,8 +22,8 @@ Examples:
           $ racknet public
           104.130.0.127
 
-          $ racknet service ipv6
-          fe80::be76:4eff:fe20:b452
+          $ racknet public ipv6
+          2001:4802:1234:5678:90ab:cdef:0123:4567
 
 Examples when run with Docker:
           $ docker run --net=host racknet/ip public

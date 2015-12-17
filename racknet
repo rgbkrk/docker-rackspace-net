@@ -44,7 +44,7 @@ obtainIP() {
   esac
 
   INTERFACE=${2:-"eth0"}
-  addrOut=$(ip -f ${IP_VERSION} addr show ${INTERFACE} 2> /dev/null )
+  addrOut=$(ip -f ${IP_VERSION} addr show ${INTERFACE} scope global 2> /dev/null )
   if [ "$?" != 0 ]; then
     echo "Unable to find an $INTERFACE interface on $IPV"
     echo ""
